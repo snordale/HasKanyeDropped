@@ -4,6 +4,8 @@ import { themes } from '../lib/themes';
 import Layout from '../components/Layout';
 import AlbumDisplay from '../components/AlbumDisplay';
 import AlbumList from '../components/AlbumList';
+import LoadingState from '../components/LoadingState';
+import ErrorState from '../components/ErrorState';
 
 export default function Home() {
     const [data, setData] = useState(null);
@@ -61,8 +63,8 @@ export default function Home() {
         return data.albums.data[data.albums.order[0]];
     }, [hasNewAlbum, data]);
 
-    if (loading) return <Layout theme={theme}><div>Loading...</div></Layout>;
-    if (error) return <Layout theme={theme}><div>Error: {error}</div></Layout>;
+    if (loading) return <LoadingState />;
+    if (error) return <ErrorState error={error} />;
     if (!data) return <Layout theme={theme}><div>No data available</div></Layout>;
 
     return (
