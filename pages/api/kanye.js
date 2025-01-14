@@ -1,18 +1,3 @@
-const album_ids = new Set([
-  '0FgZKfoU2Br5sHOfvZKTI9',
-  '6pwuKxMUkNg673KETsXPUV',
-  '2Ek1q2haOnxVqhvVKqMvJe',
-  '7gsWAHLeT0w7es6FofOXk1',
-  '7D2NdGvBHIavgLhmcwhluK',
-  '0A3g19AGFd9Qe3rAIkP8e0',
-  '7mCeLbChyegbRwwKK5shJs',
-  '20r762YmB5HeofjMCiPMLv',
-  '3WFTGIO6E3Xh4paEOBY9OU',
-  '5fPglEDz9YEwRgbLRvhCZy',
-  '5ll74bqtkcXlKE7wwkMq4g',
-  '4Uv86qWpGTxf7fU7lG5X6F',
-]);
-
 async function getKanye() {
   const client_id = process.env.SPOTIFY_CLIENT_ID;
   const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
@@ -65,19 +50,25 @@ async function getAlbums(accessToken) {
     'order': []
   };
 
+  const uniqueAlbums = new Map();
   body.items.forEach((album) => {
-    const today = new Date('2021-08-10');
-    const releaseDate = new Date(album.release_date);
-
-    if (!(album.name in albums.data) && (album_ids.has(album.id) || releaseDate > today)) {
-      albums.order.push(album.name);
-      albums.data[album.name] = {
-        'name': album.name,
-        'uri': album.uri,
-        'imageUrl': album.images[0].url,
-        'releaseDate': album.release_date
-      };
+    if (!uniqueAlbums.has(album.name) || 
+        new Date(album.release_date) > new Date(uniqueAlbums.get(album.name).release_date)) {
+      uniqueAlbums.set(album.name, album);
     }
+  });
+
+  const sortedAlbums = Array.from(uniqueAlbums.values())
+    .sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
+
+  sortedAlbums.forEach((album) => {
+    albums.order.push(album.name);
+    albums.data[album.name] = {
+      'name': album.name,
+      'uri': album.uri,
+      'imageUrl': album.images[0].url,
+      'releaseDate': album.release_date
+    };
   });
 
   return albums;
