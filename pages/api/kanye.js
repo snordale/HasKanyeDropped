@@ -1,6 +1,8 @@
+import config from '../../lib/config';
+
 async function getKanye() {
-  const client_id = process.env.SPOTIFY_CLIENT_ID;
-  const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
+  const client_id = config.spotify.clientId;
+  const client_secret = config.spotify.clientSecret;
 
   const authResponse = await fetch('https://accounts.spotify.com/api/token', {
     method: 'POST',

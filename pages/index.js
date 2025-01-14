@@ -50,10 +50,10 @@ export default function Home() {
 
         const mostRecentAlbum = data.albums.data[data.albums.order[0]];
         const releaseDate = new Date(mostRecentAlbum.releaseDate);
-        const threeMonthsAgo = new Date();
-        threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
-        return releaseDate > threeMonthsAgo;
+        return releaseDate > oneMonthAgo;
     }, [data]);
 
     const newAlbum = useMemo(() => {
@@ -112,7 +112,7 @@ export default function Home() {
                                     priority
                                 />
                             </div>
-                            <div className='px-2'>Kanye hasn't dropped in the last 3 months.</div>
+                            <div className='px-2'>Kanye hasn't dropped in the last month.</div>
                             <div className='d-inline'>
                                 <Image
                                     src='/images/gifs/blank-stare.gif'
