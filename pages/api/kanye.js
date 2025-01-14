@@ -82,25 +82,50 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Validate environment variables first
     if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET) {
-      throw new Error('Missing Spotify credentials');
+      console.error('Environment variables missing:', {
+        hasClientId: !!process.env.SPOTIFY_CLIENT_ID,
+        hasClientSecret: !!process.env.SPOTIFY_CLIENT_SECRET
+      });
+      return res.status(500).json({ 
+        message: 'Server configuration error - missing credentials',
+        details: process.env.NODE_ENV === 'development' ? 'Check .env.local file' : undefined
+      });
     }
 
-    const kanye = await getKanye();
-    const albums = await getAlbums(kanye.accessToken);
+    const kanye = await getKanye().catch(error => {
+      console.error('getKanye error:', error);
+      throw new Error(`Failed to fetch Kanye data: ${error.message}`);
+    });
+
+    const albums = await getAlbums(kanye.accessToken).catch(error => {
+      console.error('getAlbums error:', error);
+      throw new Error(`Failed to fetch albums: ${error.message}`);
+    });
     
     if (!kanye || !albums) {
-      throw new Error('Failed to fetch data');
+      throw new Error('Failed to fetch data - empty response');
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       kanye,
       albums
     });
   } catch (error) {
-    console.error('Error:', error);
-    res.status(error.message === 'Missing Spotify credentials' ? 500 : 503).json({ 
-      message: error.message || 'Internal server error'
+    console.error('API Handler Error:', error);
+    
+    // More specific error responses
+    if (error.message.includes('credentials')) {
+      return res.status(500).json({ message: 'Authentication error with Spotify' });
+    }
+    if (error.message.includes('fetch')) {
+      return res.status(503).json({ message: 'Spotify service unavailable' });
+    }
+    
+    return res.status(500).json({ 
+      message: 'Internal server error',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 } 
