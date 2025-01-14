@@ -47,12 +47,12 @@ export default function Home() {
 
     const hasNewAlbum = useMemo(() => {
         if (!data?.albums?.order?.length) return false;
-        
+
         const mostRecentAlbum = data.albums.data[data.albums.order[0]];
         const releaseDate = new Date(mostRecentAlbum.releaseDate);
         const threeMonthsAgo = new Date();
         threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-        
+
         return releaseDate > threeMonthsAgo;
     }, [data]);
 
@@ -80,46 +80,46 @@ export default function Home() {
                     {hasNewAlbum ? (
                         <>
                             <div className='d-inline'>
-                                <Image 
-                                    src='/images/gifs/lit.gif' 
-                                    width={50} 
-                                    height={50} 
+                                <Image
+                                    src='/images/gifs/lit.gif'
+                                    width={50}
+                                    height={50}
                                     alt="Lit"
-                                    priority 
+                                    priority
                                 />
                             </div>
                             <a className="hover-link px-2" href={newAlbum.uri}>
                                 {newAlbum.name} dropped on {new Date(newAlbum.releaseDate).toLocaleDateString()}
                             </a>
                             <div className='d-inline'>
-                                <Image 
-                                    src='/images/gifs/sprinting.gif' 
-                                    width={50} 
-                                    height={50} 
+                                <Image
+                                    src='/images/gifs/sprinting.gif'
+                                    width={50}
+                                    height={50}
                                     alt="Sprinting"
-                                    priority 
+                                    priority
                                 />
                             </div>
                         </>
                     ) : (
                         <>
                             <div className='d-inline'>
-                                <Image 
-                                    src='/images/gifs/shrug.gif' 
-                                    width={50} 
-                                    height={50} 
+                                <Image
+                                    src='/images/gifs/shrug.gif'
+                                    width={50}
+                                    height={50}
                                     alt="Shrug"
-                                    priority 
+                                    priority
                                 />
                             </div>
                             <div className='px-2'>Kanye hasn't dropped in the last 3 months.</div>
                             <div className='d-inline'>
-                                <Image 
-                                    src='/images/gifs/blank-stare.gif' 
-                                    width={50} 
-                                    height={50} 
+                                <Image
+                                    src='/images/gifs/blank-stare.gif'
+                                    width={50}
+                                    height={50}
                                     alt="Blank stare"
-                                    priority 
+                                    priority
                                 />
                             </div>
                         </>
@@ -144,11 +144,11 @@ export default function Home() {
                     onMouseEnter={() => setShowWaveTooltip(true)}
                     onMouseLeave={() => setShowWaveTooltip(false)}>
                     <div className='d-inline pb-4'>
-                        🌊 Waves at
+                        🌊 Waves at&nbsp;
                         <span style={{ color: theme.color }} className='d-inline font-weight-bold'>
-                            {data.kanye.popularity}%.
+                            {data.kanye.popularity}%
                         </span>
-                        🌊
+                        &nbsp;🌊
                     </div>
                     {showWaveTooltip && (
                         <div className='px-4 py-3 border'
